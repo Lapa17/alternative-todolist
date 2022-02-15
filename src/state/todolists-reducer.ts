@@ -35,8 +35,8 @@ export const todolistsReducer = (state: Array<TodolistDomainType> = initialState
         }
         case 'ADD-TODOLIST': {
             return [{
-                id: action.todolistId,
-                title: action.title,
+                id: action.todolist.id,
+                title: action.todolist.title,
                 filter: 'all',
                 addedDate: '',
                 order: 0
@@ -56,8 +56,8 @@ export const todolistsReducer = (state: Array<TodolistDomainType> = initialState
 export const removeTodolistAC = (todolistId: string) => {
     return {type: 'REMOVE-TODOLIST', id: todolistId} as const
 }
-export const addTodolistAC = (title: string) => {
-    return {type: 'ADD-TODOLIST', title: title, todolistId: v1()} as const
+export const addTodolistAC = (todolist: TodolistType) => {
+    return {type: 'ADD-TODOLIST', todolist} as const
 }
 export const changeTodolistTitleAC = (id: string, title: string) => {
     return {type: 'CHANGE-TODOLIST-TITLE', id: id, title: title} as const
@@ -76,5 +76,11 @@ export const setTodolistAC = (todolists: Array<TodolistType>) => {
 export const setTodosTС = () => (dispatch: Dispatch) => {
     todolistsAPI.getTodolists().then((res)=>{
         dispatch(setTodolistAC(res.data))
+    })
+}
+
+export const addTodosTС = (title:string) => (dispatch: Dispatch) => {
+    todolistsAPI.createTodolist(title).then((res)=>{
+        dispatch(addTodolistAC(res.data.data.item))
     })
 }
