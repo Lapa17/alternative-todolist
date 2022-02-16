@@ -84,3 +84,15 @@ export const addTodosTС = (title:string) => (dispatch: Dispatch) => {
         dispatch(addTodolistAC(res.data.data.item))
     })
 }
+
+export const deleteTodosTС = (todolistId:string) => (dispatch: Dispatch) => {
+    todolistsAPI.deleteTodolist(todolistId).then((res)=>{
+        dispatch(removeTodolistAC(todolistId))
+    })
+}
+
+export const changeTodosTitleTС = (id: string, title: string) => (dispatch: Dispatch) => {
+    todolistsAPI.updateTodolist(id,title).then((res)=>{
+        dispatch(changeTodolistTitleAC(id,title ))
+    })
+}

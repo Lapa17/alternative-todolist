@@ -128,7 +128,6 @@ export const addTasksTC = (todolistId: string, title: string) => (dispatch: Disp
 export const updateTaskStatusTS = (todolistId: string, taskId: string, status: TaskStatuses) =>
     (dispatch: Dispatch, getState: ()=> AppRootStateType) => {
 
-    debugger
     const task = getState().tasks[todolistId].find(ts => ts.id === taskId)
         if (task){
             const model:UpdateTaskModelType  = {
@@ -146,3 +145,24 @@ export const updateTaskStatusTS = (todolistId: string, taskId: string, status: T
 
 
 }
+
+export const updateTaskTitleTS = (todolistId: string, taskId: string, title: string) =>
+    (dispatch: Dispatch, getState: ()=> AppRootStateType) => {
+
+        const task = getState().tasks[todolistId].find(ts => ts.id === taskId)
+        if (task){
+            const model:UpdateTaskModelType  = {
+                title,
+                status: task.status,
+                description: task.description,
+                priority: task.priority,
+                startDate:task.startDate,
+                deadline: task.deadline,
+            }
+            todolistsAPI.updateTask(todolistId, taskId, model).then(res => {
+                dispatch(changeTaskTitleAC(taskId,title,todolistId ))
+            })
+        }
+
+
+    }
