@@ -22,10 +22,8 @@ import {
 import {
     addTaskAC,
     addTasksTC,
-    changeTaskStatusAC,
-    changeTaskTitleAC,
     deleteTasksTC,
-    removeTaskAC, updateTaskStatusTS, updateTaskTitleTS,
+    removeTaskAC, updateTaskTS,
 } from './state/tasks-reducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppRootStateType } from './state/store';
@@ -56,11 +54,11 @@ function App() {
     }, []);
 
     const changeStatus = useCallback(function (id: string, status: TaskStatuses, todolistId: string) {
-        dispatch(updateTaskStatusTS(todolistId,id,status))
+        dispatch(updateTaskTS(todolistId,id,{status}))
     }, []);
 
-    const changeTaskTitle = useCallback(function (id: string, newTitle: string, todolistId: string) {
-        dispatch(updateTaskTitleTS(todolistId,id,newTitle ))
+    const changeTaskTitle = useCallback(function (id: string, title: string, todolistId: string) {
+        dispatch(updateTaskTS(todolistId,id,{title} ))
     }, []);
 
 
