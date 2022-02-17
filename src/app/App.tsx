@@ -15,14 +15,17 @@ import { Menu } from '@mui/icons-material';
 import { LinearProgress } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { AppRootStateType } from './store';
+import {ErrorSnackbar} from '../components/ErrorSnackbar/ErrorSnackbar';
 
 
 function App() {
 
-    let status = useSelector<AppRootStateType>(state=> state.app.status)
+    const status = useSelector<AppRootStateType>(state=> state.app.status)
+    
 
     return (
         <div className="App">
+            <ErrorSnackbar />
             <AppBar position="static">
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu">
