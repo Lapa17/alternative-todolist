@@ -9,16 +9,20 @@ import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useFormik } from 'formik';
-
-type FormikErrorType = {
-    email?: string
-    password?: string
-    rememberMe?: boolean
-}
+import { useDispatch, useSelector } from 'react-redux';
+import { loginTC } from './auth-reducer';
+import { LoginDataType } from '../../api/todolists-api';
+import { AppRootStateType } from '../../app/store';
+import { Navigate } from 'react-router-dom';
 
 
 
 export const Login = () => {
+
+    const isLogedIn = useSelector<AppRootStateType>(state=> state.auth.isLoggedIn)
+
+    const dispatch = useDispatch()
+
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -26,7 +30,7 @@ export const Login = () => {
             rememberMe: false
         },
         validate: (values) => {
-            const errors: FormikErrorType = {};
+            const errors: Partial<Omit<LoginDataType, 'captcha'>> = {};
             if (!values.email) {
                 errors.email = 'Required';
             }
@@ -36,19 +40,21 @@ export const Login = () => {
             else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
                 errors.email = 'Invalid email address';
             }
-            else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}/.test(values.password)){
+            else if (!/^(?=.*[a-z])(?=.*[0-9]).{6,}/.test(values.password)){
                errors.password = 'Invalid password (pass must contain one main letter, one number and 6 symbols)'
             }
             return errors;
         },
 
         onSubmit: values => {
-            alert(JSON.stringify(values));
+            dispatch(loginTC(values));
             formik.resetForm()
         },
     })
 
-
+    if (isLogedIn) {
+        return <Navigate to='/'/>
+    }
     return <Grid container justifyContent={'center'}>
         <Grid item justifyContent={'center'}>
             <form onSubmit={formik.handleSubmit}>
