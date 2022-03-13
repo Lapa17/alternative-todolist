@@ -1,6 +1,6 @@
 import { todolistsAPI, authAPI, LoginDataType } from './../../api/todolists-api';
 import { Dispatch } from 'redux'
-import { SetAppErrorActionType, setAppStatusAC, SetAppStatusActionType, setInitializedAC } from '../../app/app-reducer'
+import { setAppStatusAC, setInitializedAC } from '../../app/app-reducer'
 import { handleServerAppError, handleServerNetworkError } from '../../utils/error-utils';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -26,13 +26,13 @@ export const {setIsLoggedInAC} = slise.actions
 
 // thunks
 
-export const loginTC = (data: LoginDataType) => (dispatch: Dispatch<ActionsType | SetAppErrorActionType | SetAppStatusActionType>) => {
-    dispatch(setAppStatusAC('loading'))
+export const loginTC = (data: LoginDataType) => (dispatch: Dispatch) => {
+    dispatch(setAppStatusAC({status:'loading'}))
     authAPI.login(data)
         .then(res => {
             if (res.data.resultCode === 0) {
                 dispatch(setIsLoggedInAC({value:true}))
-                dispatch(setAppStatusAC('succeeded'))
+                dispatch(setAppStatusAC({status:'succeeded'}))
             } else {
                 handleServerAppError(res.data, dispatch);
             }
@@ -42,13 +42,13 @@ export const loginTC = (data: LoginDataType) => (dispatch: Dispatch<ActionsType 
         })
 }
 
-export const logoutTC = () => (dispatch: Dispatch<ActionsType | SetAppErrorActionType | SetAppStatusActionType>) => {
-    dispatch(setAppStatusAC('loading'))
+export const logoutTC = () => (dispatch: Dispatch)=> {
+    dispatch(setAppStatusAC({status:'loading'}))
     authAPI.logout()
         .then(res => {
             if (res.data.resultCode === 0) {
                 dispatch(setIsLoggedInAC({value:false}))
-                dispatch(setAppStatusAC('succeeded'))
+                dispatch(setAppStatusAC({status:'succeeded'}))
             } else {
                 handleServerAppError(res.data, dispatch);
             }
@@ -67,10 +67,8 @@ export const initializeAppTC = () => (dispatch: Dispatch) => {
             } else {
             }
         }).finally(() => {
-            dispatch(setInitializedAC(true))
+            dispatch(setInitializedAC({isInitialized: true}))
         })
 }
 
 
-// types
-type ActionsType = ReturnType<typeof setIsLoggedInAC> | SetAppStatusActionType | SetAppErrorActionType
