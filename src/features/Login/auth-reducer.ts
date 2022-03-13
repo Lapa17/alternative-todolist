@@ -2,24 +2,27 @@ import { todolistsAPI, authAPI, LoginDataType } from './../../api/todolists-api'
 import { Dispatch } from 'redux'
 import { SetAppErrorActionType, setAppStatusAC, SetAppStatusActionType, setInitializedAC } from '../../app/app-reducer'
 import { handleServerAppError, handleServerNetworkError } from '../../utils/error-utils';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState = {
     isLoggedIn: false
 }
-type InitialStateType = typeof initialState
 
-export const authReducer = (state: InitialStateType = initialState, action: ActionsType): InitialStateType => {
-    switch (action.type) {
-        case 'login/SET-IS-LOGGED-IN':
-            return { ...state, isLoggedIn: action.value }
-        default:
-            return state
+
+const slise = createSlice({
+    name: 'auth',
+    initialState: initialState,
+    reducers: {
+        setIsLoggedInAC(state, action:PayloadAction<{value:boolean}>) {
+            state.isLoggedIn = action.payload.value 
+        }
     }
-}
+})
 
-// actions
-export const setIsLoggedInAC = (value: boolean) =>
-    ({ type: 'login/SET-IS-LOGGED-IN', value } as const)
+export const authReducer = slise.reducer
+
+export const {setIsLoggedInAC} = slise.actions
+
 
 // thunks
 
@@ -28,7 +31,7 @@ export const loginTC = (data: LoginDataType) => (dispatch: Dispatch<ActionsType 
     authAPI.login(data)
         .then(res => {
             if (res.data.resultCode === 0) {
-                dispatch(setIsLoggedInAC(true))
+                dispatch(setIsLoggedInAC({value:true}))
                 dispatch(setAppStatusAC('succeeded'))
             } else {
                 handleServerAppError(res.data, dispatch);
@@ -44,7 +47,7 @@ export const logoutTC = () => (dispatch: Dispatch<ActionsType | SetAppErrorActio
     authAPI.logout()
         .then(res => {
             if (res.data.resultCode === 0) {
-                dispatch(setIsLoggedInAC(false))
+                dispatch(setIsLoggedInAC({value:false}))
                 dispatch(setAppStatusAC('succeeded'))
             } else {
                 handleServerAppError(res.data, dispatch);
@@ -60,7 +63,7 @@ export const initializeAppTC = () => (dispatch: Dispatch) => {
     authAPI.me()
         .then(res => {
             if (res.data.resultCode === 0) {
-                dispatch(setIsLoggedInAC(true));
+                dispatch(setIsLoggedInAC({value:true}));
             } else {
             }
         }).finally(() => {
