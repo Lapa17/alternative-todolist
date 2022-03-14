@@ -7,7 +7,7 @@ const initialState: InitialStateType = {
 }
 
 
-const slise = createSlice({
+const sliсe = createSlice({
     name: 'app',
     initialState: initialState,
     reducers: {
@@ -23,7 +23,7 @@ const slise = createSlice({
     }
 })
 
-export const appReducer = slise.reducer
+export const appReducer = sliсe.reducer
 // (state: InitialStateType = initialState, action: ActionsType): InitialStateType => {
 //     switch (action.type) {
 //         case 'APP/SET-STATUS':
@@ -51,4 +51,4 @@ export type InitialStateType = {
 
 // export const setInitializedAC = (isInitialized: boolean) => ({type: 'APP/SET-INITIALIZED', isInitialized} as const)
 
-export const {setAppErrorAC, setAppStatusAC, setInitializedAC } = slise.actions
+export const {setAppErrorAC, setAppStatusAC, setInitializedAC } = sliсe.actions

@@ -9,7 +9,7 @@ const initialState = {
 }
 
 
-const slise = createSlice({
+const slice = createSlice({
     name: 'auth',
     initialState: initialState,
     reducers: {
@@ -19,9 +19,9 @@ const slise = createSlice({
     }
 })
 
-export const authReducer = slise.reducer
+export const authReducer = slice.reducer
 
-export const {setIsLoggedInAC} = slise.actions
+export const {setIsLoggedInAC} = slice.actions
 
 
 // thunks
