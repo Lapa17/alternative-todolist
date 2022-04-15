@@ -1,36 +1,40 @@
-import { todolistsAPI, authAPI, LoginDataType } from './../../api/todolists-api';
-import { Dispatch } from 'redux'
-import { setAppStatusAC, setInitializedAC } from '../../app/app-reducer'
-import { handleServerAppError, handleServerNetworkError } from '../../utils/error-utils';
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import {todolistsAPI, authAPI, LoginDataType, FieldsErrorType} from './../../api/todolists-api';
+import {Dispatch} from 'redux'
+import {setAppStatusAC, setInitializedAC} from '../../app/app-reducer'
+import {handleServerAppError, handleServerNetworkError} from '../../utils/error-utils';
+import {createSlice, PayloadAction, createAsyncThunk} from '@reduxjs/toolkit';
+import {AxiosError} from "axios";
 
-export const loginTC = createAsyncThunk('auth/login', async (data: LoginDataType, thunkAPI) => {
-    thunkAPI.dispatch(setAppStatusAC({ status: 'loading' }))
-    try{
-    const res = await authAPI.login(data)
-            if (res.data.resultCode === 0) {
-                
-                thunkAPI.dispatch(setAppStatusAC({ status: 'succeeded' }))
-                return { value: true }
-            } else {
-                handleServerAppError(res.data, thunkAPI.dispatch);
-                return { value: false }
-            }
-    }
-    catch(error:any) {
-            handleServerNetworkError(error, thunkAPI.dispatch) 
-            return { value: false }
-            
+export const loginTC = createAsyncThunk<
+    {value: boolean},
+    LoginDataType,
+    {rejectValue:{errors: Array<string>, fieldsErrors?: Array<FieldsErrorType>}}>
+    ('auth/login', async (data, thunkAPI) => {
+    thunkAPI.dispatch(setAppStatusAC({status: 'loading'}))
+    try {
+        const res = await authAPI.login(data)
+        if (res.data.resultCode === 0) {
+            thunkAPI.dispatch(setAppStatusAC({status: 'succeeded'}))
+            return {value: true}
+        } else {
+            handleServerAppError(res.data, thunkAPI.dispatch);
+            return thunkAPI.rejectWithValue({errors: res.data.messages, fieldsErrors: res.data.fieldsErrors})
+        }
+    } catch (err: any) {
+        const error: AxiosError = err
+        handleServerNetworkError(error, thunkAPI.dispatch)
+        return thunkAPI.rejectWithValue({errors: [error.message], fieldsErrors: undefined})
+
     }
 })
 
 export const loginTC_ = (data: LoginDataType) => (dispatch: Dispatch) => {
-    dispatch(setAppStatusAC({ status: 'loading' }))
+    dispatch(setAppStatusAC({status: 'loading'}))
     authAPI.login(data)
         .then(res => {
             if (res.data.resultCode === 0) {
-                dispatch(setIsLoggedInAC({ value: true }))
-                dispatch(setAppStatusAC({ status: 'succeeded' }))
+                dispatch(setIsLoggedInAC({value: true}))
+                dispatch(setAppStatusAC({status: 'succeeded'}))
             } else {
                 handleServerAppError(res.data, dispatch);
             }
@@ -50,7 +54,7 @@ const slice = createSlice({
             state.isLoggedIn = action.payload.value
         }
     },
-    extraReducers(builder){
+    extraReducers(builder) {
         builder.addCase(loginTC.fulfilled, (state, action) => {
             state.isLoggedIn = action.payload.value
         })
@@ -59,20 +63,19 @@ const slice = createSlice({
 
 export const authReducer = slice.reducer
 
-export const { setIsLoggedInAC } = slice.actions
+export const {setIsLoggedInAC} = slice.actions
 
 
 // thunks
 
 
-
 export const logoutTC = () => (dispatch: Dispatch) => {
-    dispatch(setAppStatusAC({ status: 'loading' }))
+    dispatch(setAppStatusAC({status: 'loading'}))
     authAPI.logout()
         .then(res => {
             if (res.data.resultCode === 0) {
-                dispatch(setIsLoggedInAC({ value: false }))
-                dispatch(setAppStatusAC({ status: 'succeeded' }))
+                dispatch(setIsLoggedInAC({value: false}))
+                dispatch(setAppStatusAC({status: 'succeeded'}))
             } else {
                 handleServerAppError(res.data, dispatch);
             }
@@ -87,12 +90,12 @@ export const initializeAppTC = () => (dispatch: Dispatch) => {
     authAPI.me()
         .then(res => {
             if (res.data.resultCode === 0) {
-                dispatch(setIsLoggedInAC({ value: true }));
+                dispatch(setIsLoggedInAC({value: true}));
             } else {
             }
         }).finally(() => {
-            dispatch(setInitializedAC({ isInitialized: true }))
-        })
+        dispatch(setInitializedAC({isInitialized: true}))
+    })
 }
 
 
