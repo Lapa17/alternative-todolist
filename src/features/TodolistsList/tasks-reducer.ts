@@ -52,9 +52,7 @@ export const updateTaskTC = createAsyncThunk('tasks/updateTask',async (param: { 
     const state = getState() as AppRootStateType
     const task = state.tasks[param.todolistId].find(t => t.id === param.taskId)
     if (!task) {
-        //throw new Error("task not found in the state");
-        console.warn('task not found in the state')
-        return rejectWithValue(null)
+        return rejectWithValue('task not found in the state')
     }
 
     const apiModel: UpdateTaskModelType = {
