@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, {useEffect, useState} from 'react'
 import './App.css'
 import { TodolistsList } from '../features/TodolistsList/TodolistsList'
 import { useDispatch, useSelector } from 'react-redux'
@@ -19,6 +19,20 @@ import { Page404 } from '../features/404/404'
 import {logoutTC } from '../features/Login/auth-reducer'
 import CircularProgress from '@mui/material/CircularProgress'
 import backgroundImg from '../assets/background-min.jpg'
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import {Switch} from "@mui/material";
+
+const darkTheme = createTheme({
+    palette: {
+        mode: 'dark',
+    },
+});
+
+const lightTheme = createTheme({
+    palette: {
+        mode: 'light',
+    },
+});
 
 type PropsType = {
     demo?: boolean
@@ -28,6 +42,21 @@ function App({demo = false}: PropsType) {
     const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.app.status)
     const isInitialized = useSelector<AppRootStateType, boolean>((state) => state.app.isInitialized)
     const isLogedIn = useSelector<AppRootStateType>(state=> state.auth.isLoggedIn)
+
+
+
+    const [theme, setTheme] = useState(lightTheme)
+    const [checked, setChecked] = useState(false);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked(e.target.checked);
+        if (checked){
+            setTheme(lightTheme)
+        }
+        else{
+            setTheme(darkTheme)
+        }
+    };
 
     const dispatch = useDispatch()
 
@@ -46,19 +75,26 @@ function App({demo = false}: PropsType) {
     </div>
  
     }
+    const background = theme === lightTheme ? `url(${backgroundImg})` : '#7D7B7B'
 
     return (
-        
-        <div className="App" style={{backgroundImage: `url(${backgroundImg})`, overflowX : 'auto', height: '100vh'}}>
+        <ThemeProvider theme={theme}>
+        <div className="App" style={{background: background, overflowX : 'auto', height: '100vh'}}>
             <ErrorSnackbar/>
             <AppBar position="fixed">
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu">
                         <Menu/>
                     </IconButton>
-                    <Typography variant="h6">
+                    <Typography variant="h6" style={{marginRight:15}}>
                         Menu
                     </Typography>
+                    {theme === lightTheme ? <span>light theme</span> : <span>dark theme</span>}
+                    <Switch
+                        checked={checked}
+                        onChange={handleChange}
+                        inputProps={{ 'aria-label': 'controlled' }}
+                    />
                     {isLogedIn && <Button color="inherit"
                                           variant={"outlined"}
                                           style={{marginRight:'20px', position: 'absolute', right: 0}}
@@ -76,7 +112,7 @@ function App({demo = false}: PropsType) {
                 </Routes>
             </Container>
         </div>
-        
+        </ThemeProvider>
     )
 }
 
