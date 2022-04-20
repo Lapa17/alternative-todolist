@@ -13,6 +13,7 @@ import { loginTC } from './auth-reducer';
 import { LoginDataType } from '../../api/todolists-api';
 import {AppDispatchType, AppRootStateType, useAppDispatch} from '../../app/store';
 import { Navigate } from 'react-router-dom';
+import {Paper} from "@mui/material";
 
 
 
@@ -64,18 +65,10 @@ export const Login = () => {
     }
     return <Grid container justifyContent={'center'}>
         <Grid item justifyContent={'center'}>
+            <Paper style={{padding: '25px', marginTop:'30px'}}>
             <form onSubmit={formik.handleSubmit}>
                 <FormControl>
-                    <FormLabel>
-                        <p>To log in get registered
-                            <a href={'https://social-network.samuraijs.com/'}
-                                target={'_blank'}> here
-                            </a>
-                        </p>
-                        <p>or use common test account credentials:</p>
-                        <p>Email: free@samuraijs.com</p>
-                        <p>Password: free</p>
-                    </FormLabel>
+
                     <FormGroup>
                         <TextField label="Email"
                             margin="normal"
@@ -99,8 +92,19 @@ export const Login = () => {
                             Login
                         </Button>
                     </FormGroup>
+                    <FormLabel>
+                        <p>To log in get registered
+                            <a href={'https://social-network.samuraijs.com/'}
+                               target={'_blank'}> here
+                            </a>
+                        </p>
+                        <p>or use common test account credentials:</p>
+                        <p>Email: free@samuraijs.com</p>
+                        <p>Password: free</p>
+                    </FormLabel>
                 </FormControl>
             </form>
+            </Paper>
         </Grid>
     </Grid>
 }

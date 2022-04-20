@@ -7,21 +7,14 @@ import {AxiosError} from "axios";
 
 
 export const initializeAppTC = createAsyncThunk('app/initializeApp', async (param, {dispatch,rejectWithValue}) => {
-    try {
         const res = await authAPI.me()
         if (res.data.resultCode === 0) {
             dispatch(setIsLoggedInAC({value: true}));
-        } else {
-            handleServerAppError(res.data, dispatch);
-            return rejectWithValue({errors: res.data.messages, fieldsErrors: res.data.fieldsErrors})
         }
-       return
-    }
-   catch (err:any) {
-       const error: AxiosError = err
-       handleServerNetworkError(error, dispatch)
-       return rejectWithValue({errors: [error.message], fieldsErrors: undefined})
-   }
+        else {
+            handleServerAppError(res.data, dispatch);
+        }
+
 })
 
 // export const initializeAppTC_ = () => (dispatch: Dispatch) => {

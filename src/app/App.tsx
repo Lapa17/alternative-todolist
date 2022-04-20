@@ -18,6 +18,7 @@ import { Login } from '../features/Login/Login'
 import { Page404 } from '../features/404/404'
 import {logoutTC } from '../features/Login/auth-reducer'
 import CircularProgress from '@mui/material/CircularProgress'
+import backgroundImg from '../assets/background-min.jpg'
 
 type PropsType = {
     demo?: boolean
@@ -48,22 +49,25 @@ function App({demo = false}: PropsType) {
 
     return (
         
-        <div className="App">
+        <div className="App" style={{backgroundImage: `url(${backgroundImg})`, overflowX : 'auto', height: '100vh'}}>
             <ErrorSnackbar/>
-            <AppBar position="static">
+            <AppBar position="fixed">
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu">
                         <Menu/>
                     </IconButton>
                     <Typography variant="h6">
-                        News
+                        Menu
                     </Typography>
-                    {isLogedIn && <Button color="inherit" onClick={logoutHandler}>Logout</Button>}
+                    {isLogedIn && <Button color="inherit"
+                                          variant={"outlined"}
+                                          style={{marginRight:'20px', position: 'absolute', right: 0}}
+                                          onClick={logoutHandler}>Logout</Button>}
                 </Toolbar>
                 {status === 'loading' && <LinearProgress/>}
             </AppBar>
             
-            <Container fixed>
+            <Container fixed style={{marginTop: '90px'}}>
                 <Routes>
                     <Route path='/' element={<TodolistsList demo={demo}/>} />
                     <Route path='login' element={<Login  />} />

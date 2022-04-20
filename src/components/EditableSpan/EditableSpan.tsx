@@ -1,9 +1,11 @@
 import React, { ChangeEvent, useState } from 'react';
 import TextField from '@mui/material/TextField';
+import {TaskStatuses} from "../../api/todolists-api";
 
 type EditableSpanPropsType = {
     value: string
     onChange: (newValue: string) => void
+    status?: TaskStatuses
 }
 
 export const EditableSpan = React.memo(function (props: EditableSpanPropsType) {
@@ -23,7 +25,9 @@ export const EditableSpan = React.memo(function (props: EditableSpanPropsType) {
         setTitle(e.currentTarget.value)
     }
 
+    const completedStyle = props.status === TaskStatuses.Completed ? {color:'#c9c5c5', textDecoration: 'line-through'} : {}
+
     return editMode
         ? <TextField value={title} onChange={changeTitle} autoFocus onBlur={activateViewMode}/>
-        : <span onDoubleClick={activateEditMode}>{props.value}</span>
+        : <span onDoubleClick={activateEditMode} style={completedStyle}>{props.value}</span>
 });

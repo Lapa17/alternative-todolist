@@ -6,9 +6,10 @@ import { AddBox } from '@mui/icons-material';
 type AddItemFormPropsType = {
     addItem: (title: string) => void
     disabled?: boolean
+    label: string
 }
 
-export const AddItemForm = React.memo(function ({addItem, disabled = false}: AddItemFormPropsType) {
+export const AddItemForm = React.memo(function ({addItem, disabled = false, label}: AddItemFormPropsType) {
     console.log('AddItemForm called')
 
     let [title, setTitle] = useState('')
@@ -36,14 +37,15 @@ export const AddItemForm = React.memo(function ({addItem, disabled = false}: Add
         }
     }
 
-    return <div>
+    return <div style={{display: 'flex',
+        alignItems: 'center'}}>
         <TextField variant="outlined"
                    disabled={disabled}
                    error={!!error}
                    value={title}
                    onChange={onChangeHandler}
                    onKeyPress={onKeyPressHandler}
-                   label="Title"
+                   label={label}
                    helperText={error}
         />
         <IconButton color="primary" onClick={addItemHandler} disabled={disabled}>
