@@ -1,7 +1,7 @@
-import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
+import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
-import { AddBox } from '@mui/icons-material';
+import {AddBox} from '@mui/icons-material';
 
 type AddItemFormPropsType = {
     addItem: (title: string) => void
@@ -10,7 +10,6 @@ type AddItemFormPropsType = {
 }
 
 export const AddItemForm = React.memo(function ({addItem, disabled = false, label}: AddItemFormPropsType) {
-    console.log('AddItemForm called')
 
     let [title, setTitle] = useState('')
     let [error, setError] = useState<string | null>(null)
@@ -37,8 +36,10 @@ export const AddItemForm = React.memo(function ({addItem, disabled = false, labe
         }
     }
 
-    return <div style={{display: 'flex',
-        alignItems: 'center'}}>
+    return <div style={{
+        display: 'flex',
+        alignItems: 'center'
+    }}>
         <TextField variant="outlined"
                    disabled={disabled}
                    error={!!error}

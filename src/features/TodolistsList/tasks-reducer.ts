@@ -23,11 +23,19 @@ export const fetchTasksTC = createAsyncThunk('tasks/fetchTasks', async (todolist
 
 })
 
-export const removeTaskTC = createAsyncThunk('tasks/removeTask', async (param: { taskId: string, todolistId: string }, thunkAPI) => {
-    thunkAPI.dispatch(setAppStatusAC({status: 'loading'}))
-    const res = await todolistsAPI.deleteTask(param.todolistId, param.taskId)
-    thunkAPI.dispatch(setAppStatusAC({status: 'succeeded'}))
-    return {taskId: param.taskId, todolistId: param.todolistId}
+export const removeTaskTC = createAsyncThunk('tasks/removeTask', async (param: { taskId: string, todolistId: string }, {dispatch,rejectWithValue}) => {
+    dispatch(setAppStatusAC({status: 'loading'}))
+    try {
+        const res = await todolistsAPI.deleteTask(param.todolistId, param.taskId)
+        dispatch(setAppStatusAC({status: 'succeeded'}))
+        return {taskId: param.taskId, todolistId: param.todolistId}
+    }
+    catch (err:any){
+        const error: AxiosError = err
+        handleServerNetworkError(error, dispatch)
+        return rejectWithValue({errors: [error.message], fieldsErrors: undefined})
+    }
+
 })
 
 export const addTaskTC = createAsyncThunk('tasks/addTask', async (param: { title: string, todolistId: string }, {

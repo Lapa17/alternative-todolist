@@ -7,7 +7,10 @@ import {AxiosError} from "axios";
 
 const initialState: Array<TodolistDomainType> = []
 
-export const fetchTodolistsTC = createAsyncThunk('todolist/fetchTodolists', async (param, {dispatch,rejectWithValue}) => {
+export const fetchTodolistsTC = createAsyncThunk('todolist/fetchTodolists', async (param, {
+    dispatch,
+    rejectWithValue
+}) => {
     dispatch(setAppStatusAC({status: 'loading'}))
     try {
         const res = await todolistsAPI.getTodolists()
@@ -20,7 +23,10 @@ export const fetchTodolistsTC = createAsyncThunk('todolist/fetchTodolists', asyn
     }
 })
 
-export const removeTodolistTC = createAsyncThunk('todolist/removeTodolist', async (param: {todolistId: string }, {dispatch,rejectWithValue}) => {
+export const removeTodolistTC = createAsyncThunk('todolist/removeTodolist', async (param: { todolistId: string }, {
+    dispatch,
+    rejectWithValue
+}) => {
     dispatch(setAppStatusAC({status: 'loading'}))
     dispatch(changeTodolistEntityStatusAC({id: param.todolistId, status: 'loading'}))
     try {
@@ -34,7 +40,10 @@ export const removeTodolistTC = createAsyncThunk('todolist/removeTodolist', asyn
     }
 })
 
-export const addTodolistTC = createAsyncThunk('todolist/addTodolist', async (param: {title: string }, {dispatch,rejectWithValue}) => {
+export const addTodolistTC = createAsyncThunk('todolist/addTodolist', async (param: { title: string }, {
+    dispatch,
+    rejectWithValue
+}) => {
     dispatch(setAppStatusAC({status: 'loading'}))
     try {
         const res = await todolistsAPI.createTodolist(param.title)
@@ -47,7 +56,10 @@ export const addTodolistTC = createAsyncThunk('todolist/addTodolist', async (par
     }
 })
 
-export const changeTodolistTitleTC = createAsyncThunk('todolist/changeTodolistTitle', async (param: {id: string, title: string}, {dispatch,rejectWithValue}) => {
+export const changeTodolistTitleTC = createAsyncThunk('todolist/changeTodolistTitle', async (param: { id: string, title: string }, {
+    dispatch,
+    rejectWithValue
+}) => {
     dispatch(setAppStatusAC({status: 'loading'}))
     try {
         const res = await todolistsAPI.updateTodolist(param.id, param.title)
@@ -59,7 +71,6 @@ export const changeTodolistTitleTC = createAsyncThunk('todolist/changeTodolistTi
         return rejectWithValue({errors: [error.message], fieldsErrors: undefined})
     }
 })
-
 
 
 const slice = createSlice({

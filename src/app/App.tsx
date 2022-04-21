@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import './App.css'
-import { TodolistsList } from '../features/TodolistsList/TodolistsList'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppRootStateType } from './store'
-import {initializeAppTC, RequestStatusType} from './app-reducer'
+import {TodolistsList} from '../features/TodolistsList/TodolistsList'
+import {useDispatch, useSelector} from 'react-redux'
+import {initializeAppTC} from './app-reducer'
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -11,19 +10,19 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import LinearProgress from '@mui/material/LinearProgress';
-import { Menu } from '@mui/icons-material';
-import { ErrorSnackbar } from '../components/ErrorSnackbar/ErrorSnackbar'
-import { Navigate, Route, Router, Routes } from 'react-router-dom'
-import { Login } from '../features/Login/Login'
-import { Page404 } from '../features/404/404'
-import {logoutTC } from '../features/Login/auth-reducer'
+import {Menu} from '@mui/icons-material';
+import {ErrorSnackbar} from '../components/ErrorSnackbar/ErrorSnackbar'
+import {Navigate, Route, Routes} from 'react-router-dom'
+import {Login} from '../features/Login/Login'
+import {Page404} from '../features/404/404'
+import {logoutTC} from '../features/Login/auth-reducer'
 import CircularProgress from '@mui/material/CircularProgress'
 import backgroundImg from '../assets/background-min.jpg'
 import darkBgImg from '../assets/darkbackground-min.jpg'
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {Switch} from "@mui/material";
-import { selectIsInitialized, selectStatus } from '../selectors/app-selectors'
-import { selectIsLoggedIn } from '../selectors/auth-selectors'
+import {selectIsInitialized, selectStatus} from '../selectors/app-selectors'
+import {selectIsLoggedIn} from '../selectors/auth-selectors'
 
 const darkTheme = createTheme({
     palette: {
@@ -52,17 +51,16 @@ function App({demo = false}: PropsType) {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(e.target.checked);
-        if (checked){
+        if (checked) {
             setTheme(lightTheme)
-        }
-        else{
+        } else {
             setTheme(darkTheme)
         }
     };
 
     const dispatch = useDispatch()
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(initializeAppTC())
     }, [])
 
@@ -70,50 +68,50 @@ function App({demo = false}: PropsType) {
         dispatch(logoutTC())
     }
 
-    if(!isInitialized){
+    if (!isInitialized) {
         return <div
-        style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
-        <CircularProgress/>
-    </div>
- 
+            style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+            <CircularProgress/>
+        </div>
+
     }
     const background = theme === lightTheme ? `url(${backgroundImg})` : `url(${darkBgImg})`
 
     return (
         <ThemeProvider theme={theme}>
-        <div className="App" style={{background: background, overflowX : 'auto', height: '100vh'}}>
-            <ErrorSnackbar/>
-            <AppBar position="fixed">
-                <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="menu">
-                        <Menu/>
-                    </IconButton>
-                    <Typography variant="h6" style={{marginRight:15}}>
-                        Menu
-                    </Typography>
-                    {theme === lightTheme ? <span>light theme</span> : <span>dark theme</span>}
-                    <Switch
-                        checked={checked}
-                        onChange={handleChange}
-                        inputProps={{ 'aria-label': 'controlled' }}
-                    />
-                    {isLoggedIn && <Button color="inherit"
-                                          variant={"outlined"}
-                                          style={{marginRight:'20px', position: 'absolute', right: 0}}
-                                          onClick={logoutHandler}>Logout</Button>}
-                </Toolbar>
-                {status === 'loading' && <LinearProgress/>}
-            </AppBar>
-            
-            <Container fixed style={{marginTop: '90px'}}>
-                <Routes>
-                    <Route path='/' element={<TodolistsList demo={demo}/>} />
-                    <Route path='login' element={<Login  />} />
-                    <Route path='404' element={<Page404 />} />
-                    <Route path="*" element={<Navigate to='404'/>}/>
-                </Routes>
-            </Container>
-        </div>
+            <div className="App" style={{background: background, overflowX: 'auto', height: '100vh'}}>
+                <ErrorSnackbar/>
+                <AppBar position="fixed">
+                    <Toolbar>
+                        <IconButton edge="start" color="inherit" aria-label="menu">
+                            <Menu/>
+                        </IconButton>
+                        <Typography variant="h6" style={{marginRight: 15}}>
+                            Menu
+                        </Typography>
+                        {theme === lightTheme ? <span>light theme</span> : <span>dark theme</span>}
+                        <Switch
+                            checked={checked}
+                            onChange={handleChange}
+                            inputProps={{'aria-label': 'controlled'}}
+                        />
+                        {isLoggedIn && <Button color="inherit"
+                                               variant={"outlined"}
+                                               style={{marginRight: '20px', position: 'absolute', right: 0}}
+                                               onClick={logoutHandler}>Logout</Button>}
+                    </Toolbar>
+                    {status === 'loading' && <LinearProgress/>}
+                </AppBar>
+
+                <Container fixed style={{marginTop: '90px'}}>
+                    <Routes>
+                        <Route path='/' element={<TodolistsList demo={demo}/>}/>
+                        <Route path='login' element={<Login/>}/>
+                        <Route path='404' element={<Page404/>}/>
+                        <Route path="*" element={<Navigate to='404'/>}/>
+                    </Routes>
+                </Container>
+            </div>
         </ThemeProvider>
     )
 }
