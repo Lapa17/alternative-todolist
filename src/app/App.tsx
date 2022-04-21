@@ -19,8 +19,11 @@ import { Page404 } from '../features/404/404'
 import {logoutTC } from '../features/Login/auth-reducer'
 import CircularProgress from '@mui/material/CircularProgress'
 import backgroundImg from '../assets/background-min.jpg'
+import darkBgImg from '../assets/darkbackground-min.jpg'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import {Switch} from "@mui/material";
+import { selectIsInitialized, selectStatus } from '../selectors/app-selectors'
+import { selectIsLoggedIn } from '../selectors/auth-selectors'
 
 const darkTheme = createTheme({
     palette: {
@@ -39,10 +42,9 @@ type PropsType = {
 }
 
 function App({demo = false}: PropsType) {
-    const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.app.status)
-    const isInitialized = useSelector<AppRootStateType, boolean>((state) => state.app.isInitialized)
-    const isLogedIn = useSelector<AppRootStateType>(state=> state.auth.isLoggedIn)
-
+    const status = useSelector(selectStatus)
+    const isInitialized = useSelector(selectIsInitialized)
+    const isLoggedIn = useSelector(selectIsLoggedIn)
 
 
     const [theme, setTheme] = useState(lightTheme)
@@ -75,7 +77,7 @@ function App({demo = false}: PropsType) {
     </div>
  
     }
-    const background = theme === lightTheme ? `url(${backgroundImg})` : '#7D7B7B'
+    const background = theme === lightTheme ? `url(${backgroundImg})` : `url(${darkBgImg})`
 
     return (
         <ThemeProvider theme={theme}>
@@ -95,7 +97,7 @@ function App({demo = false}: PropsType) {
                         onChange={handleChange}
                         inputProps={{ 'aria-label': 'controlled' }}
                     />
-                    {isLogedIn && <Button color="inherit"
+                    {isLoggedIn && <Button color="inherit"
                                           variant={"outlined"}
                                           style={{marginRight:'20px', position: 'absolute', right: 0}}
                                           onClick={logoutHandler}>Logout</Button>}

@@ -17,20 +17,23 @@ import Paper from '@mui/material/Paper';
 import { AddItemForm } from '../../components/AddItemForm/AddItemForm'
 import { Todolist } from './Todolist/Todolist'
 import { Navigate } from 'react-router-dom'
+import { selectIsLoggedIn } from '../../selectors/auth-selectors'
+import { selectTodolists } from '../../selectors/todolist-selectors'
+import { selectTasks } from '../../selectors/todolist-selectors copy'
 
 type PropsType = {
     demo?: boolean
 }
 
 export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
-    const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists)
-    const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
-    const isLogedIn = useSelector<AppRootStateType>(state=> state.auth.isLoggedIn)
+    const todolists = useSelector(selectTodolists)
+    const tasks = useSelector(selectTasks)
+    const isLoggedIn = useSelector(selectIsLoggedIn)
 
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (!isLogedIn) {
+        if (!isLoggedIn) {
             return;
         }
         const thunk = fetchTodolistsTC()
@@ -77,7 +80,7 @@ export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
         dispatch(thunk)
     }, [dispatch])
 
-    if(!isLogedIn){
+    if(!isLoggedIn){
         return <Navigate to='/login'/>
     }
     return <>

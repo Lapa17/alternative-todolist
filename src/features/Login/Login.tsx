@@ -14,12 +14,13 @@ import { LoginDataType } from '../../api/todolists-api';
 import {AppDispatchType, AppRootStateType, useAppDispatch} from '../../app/store';
 import { Navigate } from 'react-router-dom';
 import {Paper} from "@mui/material";
+import { selectIsLoggedIn } from '../../selectors/auth-selectors';
 
 
 
 export const Login = () => {
 
-    const isLogedIn = useSelector<AppRootStateType>(state=> state.auth.isLoggedIn)
+    const isLogedIn = useSelector(selectIsLoggedIn)
 
     const dispatch = useAppDispatch()
 
