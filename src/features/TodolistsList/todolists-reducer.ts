@@ -72,6 +72,24 @@ export const changeTodolistTitleTC = createAsyncThunk('todolist/changeTodolistTi
     }
 })
 
+export const changeTodolistOrderTC = createAsyncThunk('todolist/changeTodolistOrder', async (param: { id: string, afterItemId: string }, {
+    dispatch,
+    rejectWithValue
+}) => {
+    debugger
+    dispatch(setAppStatusAC({status: 'loading'}))
+    try {
+        const res = await todolistsAPI.updateTodolistOrder(param.id, param.afterItemId)
+        dispatch(setAppStatusAC({status: 'succeeded'}))
+        return {id: param.id, afterItemId: param.afterItemId}
+    } catch (err: any) {
+        const error: AxiosError = err
+        handleServerNetworkError(error, dispatch)
+        return rejectWithValue({errors: [error.message], fieldsErrors: undefined})
+    }
+})
+
+
 
 const slice = createSlice({
     name: 'todolist',
@@ -102,6 +120,10 @@ const slice = createSlice({
         builder.addCase(changeTodolistTitleTC.fulfilled, (state, action) => {
             const index = state.findIndex(tl => tl.id === action.payload.id)
             state[index].title = action.payload.title
+        })
+        builder.addCase(changeTodolistOrderTC.fulfilled, (state, action) => {
+            // const index = state.findIndex(tl => tl.id === action.payload.id)
+            // state[index].id = action.payload.afterItemId
         })
     }
 })

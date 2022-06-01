@@ -1,7 +1,7 @@
-import React, {useCallback, useEffect} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {useSelector} from 'react-redux'
 import {useAppDispatch} from '../../app/store'
-import {addTodolistTC, changeTodolistTitleTC, fetchTodolistsTC, removeTodolistTC} from './todolists-reducer'
+import {addTodolistTC, changeTodolistOrderTC, changeTodolistTitleTC, fetchTodolistsTC, removeTodolistTC} from './todolists-reducer'
 import {addTaskTC} from './tasks-reducer'
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -20,6 +20,7 @@ export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
     const todolists = useSelector(selectTodolists)
     const tasks = useSelector(selectTasks)
     const isLoggedIn = useSelector(selectIsLoggedIn)
+    const [currentTodo, setCurrentTodo] = useState<any>(null)
 
     const dispatch = useAppDispatch()
 
@@ -48,6 +49,35 @@ export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
         dispatch(addTodolistTC({title}))
     }, [])
 
+
+    function dragStartHandler(e: React.DragEvent<HTMLDivElement>, tl:any) {
+        console.log('drag', tl)
+        setCurrentTodo(tl)
+    }
+    function dragLeaveHandler(e: React.DragEvent<HTMLDivElement>) {
+
+    }
+    function dragEndHandler(e: React.DragEvent<HTMLDivElement>) {
+
+    }
+    function dragOverHandler(e: React.DragEvent<HTMLDivElement>) {
+        e.preventDefault()
+    }
+    function dropHandler(e: React.DragEvent<HTMLDivElement>, tl:any) {
+        e.preventDefault()
+        // todolists.map(todo => {
+        //     if(todo.id === tl.id){
+        //         return {...todo, order: currentTodo.order}
+        //     }
+        //     if(todo.id === currentTodo.id){
+        //         return {...todo, order: tl.order}
+        //     }
+        //     return todo
+        // })
+        dispatch(changeTodolistOrderTC({id: tl.id, afterItemId: currentTodo.id}))
+    }
+
+
     if (!isLoggedIn) {
         return <Navigate to='/login'/>
     }
@@ -62,8 +92,15 @@ export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
                 todolists.map(tl => {
                     let allTodolistTasks = tasks[tl.id]
 
-                    return <Grid item key={tl.id}>
-                        <Paper style={{padding: '10px', width: '260px'}}>
+                    return <Grid item key={tl.id} >
+                        <Paper style={{padding: '10px', width: '260px'}}
+                               draggable={true}
+                               onDragStart={(e)=> dragStartHandler(e, tl)}
+                               onDragLeave={(e)=> dragLeaveHandler(e)}
+                               onDragEnd={(e)=> dragEndHandler(e)}
+                               onDragOver={(e)=> dragOverHandler(e)}
+                               onDrop={(e)=> dropHandler(e, tl)}
+                        >
                             <Todolist
                                 todolist={tl}
                                 tasks={allTodolistTasks}
